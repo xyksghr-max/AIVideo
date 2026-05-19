@@ -1,0 +1,128 @@
+{
+  "37": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "wan2.2_ti2v_5B_fp16.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "type": "wan",
+      "device": "default"
+    }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "wan2.2_vae.safetensors"
+    }
+  },
+  "48": {
+    "class_type": "ModelSamplingSD3",
+    "inputs": {
+      "model": [
+        "37",
+        0
+      ],
+      "shift": 8
+    }
+  },
+  "55": {
+    "class_type": "Wan22ImageToVideoLatent",
+    "inputs": {
+      "vae": [
+        "39",
+        0
+      ],
+      "width": 832,
+      "height": 480,
+      "length": 81,
+      "batch_size": 1
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "38",
+        0
+      ],
+      "text": "A cinematic luxury perfume commercial, a matte black glass perfume bottle standing on a glossy black marble surface, elegant gold highlights, soft studio key light from the left, subtle rim light, shallow depth of field, premium advertising style, slow smooth camera push-in with a slight rightward arc, realistic reflections on the table, delicate mist in the background, clean minimal set design, high detail, temporal consistency, smooth motion, stable object shape, coherent lighting, no cuts, no sudden camera jump"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "38",
+        0
+      ],
+      "text": "text, watermark, logo, subtitle, low quality, blurry, noisy, jpeg artifacts, oversaturated, overexposed, underexposed, flicker, jitter, temporal inconsistency, unstable object shape, warped bottle, melting glass, distorted reflections, camera shake, jump cut, sudden zoom, duplicate bottle, broken edges, bad composition, cluttered background"
+    }
+  },
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "48",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "55",
+        0
+      ],
+      "seed": 2026052002,
+      "steps": 16,
+      "cfg": 5.5,
+      "sampler_name": "uni_pc",
+      "scheduler": "simple",
+      "denoise": 1
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "57": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "fps": 16
+    }
+  },
+  "58": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "57",
+        0
+      ],
+      "filename_prefix": "wan22_ti2v5b_quality/perfume_832x480_16step",
+      "format": "mp4",
+      "codec": "h264"
+    }
+  }
+}
