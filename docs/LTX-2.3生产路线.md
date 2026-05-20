@@ -1,6 +1,6 @@
 # LTX-2.3 FP8 生产路线
 
-更新日期：2026-05-20
+更新日期：2026-05-21
 
 ## 1. 路线定位
 
@@ -136,9 +136,49 @@ LTX-2.3 跑通
 
 ## 9. 下一步操作
 
-1. 提供新 48GB 服务器 SSH 登录信息，或由用户进入 JupyterLab 终端执行命令。
-2. 检查 GPU、磁盘、Python、PyTorch、CUDA。
-3. 在数据盘部署 ComfyUI / LTX-2.3 节点 / LTX-2.3 22B dev FP8 权重。
-4. 打开 `http://localhost:6006` 验证 ComfyUI。
-5. 跑 LTX-2.3 官方 T2V/I2V 工作流。
-6. 生成第一条外贸玻璃鸟广告片镜头。
+1. 监控 `screen` 会话 `ltx23_download`，等待 LTX-2.3 22B dev FP8、Gemma text encoder、空间上采样器下载完成。
+2. 下载完成后重启 `screen` 会话 `comfyui_ltx`。
+3. 打开 `http://localhost:6006` 验证 ComfyUI。
+4. 跑 LTX-2.3 官方或最小 T2V/I2V 工作流。
+5. 生成第一条外贸玻璃鸟广告片镜头。
+
+## 10. 当前部署记录
+
+记录时间：2026-05-21
+
+服务器：
+
+- GPU：平台标称 `vGPU-48GB-350W / 48GB`，系统内识别为 NVIDIA GeForce RTX 3090，显存约 49,152MiB。
+- Driver：580.82.09；系统显示 CUDA 13.0。
+- 镜像：PyTorch 2.7.0 / Python 3.12 / Ubuntu 22.04 / CUDA 12.8。
+- 数据盘：`/root/autodl-tmp`，200GB。
+
+部署路径：
+
+- 项目目录：`/root/autodl-tmp/AI-Video-LTX`
+- ComfyUI：`/root/autodl-tmp/AI-Video-LTX/ComfyUI`
+- venv：`/root/autodl-tmp/venvs/ltx-comfyui`
+- 日志：`/root/autodl-tmp/logs`
+- 启动脚本：`/root/autodl-tmp/AI-Video-LTX/run_comfyui.sh`
+
+已完成：
+
+- ComfyUI 已部署到数据盘。
+- `ComfyUI-LTXVideo` 已安装到 `custom_nodes`。
+- `torch / torchvision / torchaudio` 已对齐到 `2.7.0+cu128`。
+- `kornia` 已固定到 `0.7.4`，解决 LTXVideo 节点导入失败。
+- ComfyUI 已在 `screen` 会话 `comfyui_ltx` 中启动，`/`、`/system_stats`、`/object_info` 均返回 200。
+- LTXVideo 自定义节点已正常加载。
+
+下载中：
+
+- `screen` 会话：`ltx23_download`
+- 日志：`/root/autodl-tmp/logs/ltx23_download.log`
+- `ltx-2.3-22b-dev-fp8.safetensors` -> `ComfyUI/models/checkpoints/`
+- `gemma_3_12B_it_fp4_mixed.safetensors` -> `ComfyUI/models/text_encoders/`
+- `ltx-2.3-spatial-upscaler-x2-1.0.safetensors` -> `ComfyUI/models/latent_upscale_models/`
+
+注意：
+
+- 当前 PyTorch 2.7 可运行，但 ComfyUI 日志提示 PyTorch 2.8+ 对 DynamicVRAM 支持更好。先不更换镜像，只有在 LTX-2.3 实测显存调度或速度明显受限时再升级。
+- 系统内尚未确认系统级 `ffmpeg` 可用；如视频保存或后期处理需要，再安装或使用 Python 包内置 ffmpeg。
