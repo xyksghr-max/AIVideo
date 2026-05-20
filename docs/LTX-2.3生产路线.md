@@ -24,9 +24,9 @@ ComfyUI 生产总控台
 - GPU：vGPU-48GB-350W / 48GB
 - 内存：90GB
 - CPU：12 核或以上
-- 数据盘：至少 250GB，推荐 300-500GB
+- 数据盘：当前 200GB；后续如同时保留多模型和批量输出，推荐扩到 300-500GB
 - 系统：Ubuntu 22.04
-- 镜像：PyTorch + CUDA 12.x；若镜像自带 Python 3.12，可单独创建 ComfyUI Python 3.11/3.12 环境
+- 镜像：PyTorch 2.7.0 / Python 3.12 / CUDA 12.8
 
 选择理由：
 
@@ -38,8 +38,8 @@ ComfyUI 生产总控台
 
 优先级：
 
-1. LTX-2.3 22B distilled FP8：快速迭代、分镜验证、低成本出片。
-2. LTX-2.3 22B dev FP8：更高质量镜头、成片候选。
+1. LTX-2.3 22B dev FP8：当前主力，优先用于商业镜头生产。
+2. LTX-2.3 22B distilled FP8：后续可选，用于快速批量试错。
 3. 上采样/超分工作流：用于最终交付前提升质感。
 4. BF16 全量模型：只在 48GB 能稳定运行且质量明显提升时使用；否则不作为第一阶段主线。
 
@@ -90,9 +90,9 @@ ComfyUI 生产总控台
 
 ## 7. 下一步操作
 
-1. 租用 vGPU-48GB-350W / 48GB、90GB 内存服务器。
-2. 提供新的 SSH 登录信息，或由用户进入 JupyterLab 终端执行命令。
-3. 在数据盘部署 ComfyUI / LTX-2.3 节点 / LTX-2.3 FP8 权重。
+1. 提供新 48GB 服务器 SSH 登录信息，或由用户进入 JupyterLab 终端执行命令。
+2. 检查 GPU、磁盘、Python、PyTorch、CUDA。
+3. 在数据盘部署 ComfyUI / LTX-2.3 节点 / LTX-2.3 22B dev FP8 权重。
 4. 打开 `http://localhost:6006` 验证 ComfyUI。
 5. 跑 LTX-2.3 官方 T2V/I2V 工作流。
 6. 生成第一条外贸玻璃鸟广告片镜头。

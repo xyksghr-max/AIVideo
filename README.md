@@ -15,7 +15,8 @@
 - 已完成远程 GPU 服务器基础部署。
 - 已在 AutoDL 数据盘下载 Wan2.2 TI2V 5B 的 ComfyUI 最小组合。
 - 已用 Wan2.2 TI2V 5B 跑通多条基线视频，确认 ComfyUI 远程生成链路可用。
-- 下一步切换到 vGPU-48GB-350W / 48GB、90GB 内存服务器，部署 LTX-2.3 FP8 生产工作流。
+- 已创建 LTX 生产服务器：vGPU-48GB-350W / 48GB、90GB 内存、PyTorch 2.7.0、Python 3.12、CUDA 12.8、数据盘 200GB。
+- 下一步在新服务器数据盘部署 ComfyUI + ComfyUI-LTXVideo + LTX-2.3 22B dev FP8。
 
 ## 仓库原则
 
